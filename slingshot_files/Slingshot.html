@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--Monospace Style-->
+		<style> div    {font-family: "Courier New", Times, monospace;} </style>
+		
+		<!--Translation Sliders-->
+		<div> X-axis:   Left <input id="XSlider" type="range"  min="-0.75" max="0.75" step="0.01" value="0" />  Right </div>
+		<div> Y-axis:   Down <input id="YSlider" type="range"  min="0.00"  max="1" step="0.01" value="0" />  Up </div>
+		<div> Z-axis:   Back <input id="ZSlider" type="range"  min="-0.4" max="0.8" step="0.01" value="0" />  Front </div>
+		
+		<!--Instructions-->
+		<div> 
+					</br> <b>Instructions:</b> Position the slingshot on any axes with the sliders, </br>
+					then click the marble, pull it back or to the side, and release it to shoot.</br>
+					The force of the launch depends on how far you pull back the marble. </br>
+					Reload the page to shoot again... 
+		</div>
+	
+		<!--Vertex Shader Instructions-->
+		<script id="vertexShader" type="x-shader/x-vertex">
+		attribute vec4 veCoords;
+		attribute vec4 veColors;
+		
+		uniform float fudgeFac;
+		uniform mat4 transform;
+		
+		varying vec4 frColors;
+
+		void main()
+		{
+			vec4 transformPos = veCoords * transform;
+			
+			gl_Position = vec4(transformPos.xyz, 1.0 + transformPos.z * fudgeFac);
+			frColors = veColors;
+		}
+		</script>
+
+		<!--Fragment Shader Instructions-->
+		<script id="fragmentShader" type="x-shader/x-fragment">
+		precision mediump float;
+
+		varying vec4 frColors;
+
+		void main()
+		{
+			gl_FragColor = frColors;
+		}
+		</script>
+
+		<!--Dependencies-->
+		<script type="text/javascript" src="../common/webgl-utils.js"></script>
+		<script type="text/javascript" src="../common/initShaders.js"></script>
+		<script type="text/javascript" src="Matrix.js"></script>
+		<script type="text/javascript" src="Arrays.js"></script>
+		<script type="text/javascript" src="Slingshot.js"></script>
+	</head>
+
+	<body>
+		<canvas id="Canvas" width="512" height="512"></canvas>
+	</body>
+</html>
