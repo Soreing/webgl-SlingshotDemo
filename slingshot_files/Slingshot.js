@@ -43,6 +43,11 @@ var projForce  = [0, 0, 0];	// Force vector that acts on the projecile
 var sVertex = [];	// Holds the vertex information of the stone
 var sColor = [];	// Holds the color information of the stone
 
+// WebGL Buffers
+var sVerticeBuff;	// Stone Vertex Buffer
+var bVerticeBuff;	// Base Vertex Buffer
+var sColorBuff;		// Stone Color Buffer
+var bColorBuff;		// Base Color Buffer
 
 //Converts degrees to radians
 function DegToRad(degree) { return degree*Math.PI/180; }
@@ -231,15 +236,20 @@ window.onload = function setup()
 		}
     }
 	
+	sVerticeBuff = webGL.createBuffer();
+	bVerticeBuff = webGL.createBuffer();
+	sColorBuff = webGL.createBuffer();
+	bColorBuff = webGL.createBuffer();
+
 	render();
 }
 
+
 //Loads a set of vertices and colors with a specified transform matrix into the shader
-function LoadObject(ve, co, tr)
+function LoadObject(ve, co, tr, vbuf, cbuf,)
 {
-	//Create a buffer for vertices and bind it to the pipeline
-	var verticeBuff = webGL.createBuffer();
-	webGL.bindBuffer( webGL.ARRAY_BUFFER, verticeBuff );
+	// Bind vertex buffer to the pipeline
+    webGL.bindBuffer( webGL.ARRAY_BUFFER, vbuf );
 	webGL.bufferData( webGL.ARRAY_BUFFER, new Float32Array(ve), webGL.STATIC_DRAW );
 	
 	//Configure the attribute to read vertex information correctly
@@ -247,9 +257,8 @@ function LoadObject(ve, co, tr)
 	webGL.vertexAttribPointer(veCoords, element, webGL.FLOAT, normal, stride, offset);
 	webGL.enableVertexAttribArray( veCoords );
 	
-	//Create a buffer for vertices and bind it to the pipeline
-	var colorBuff = webGL.createBuffer();
-    webGL.bindBuffer( webGL.ARRAY_BUFFER, colorBuff );
+	// Bind vertex color to the pipeline
+    webGL.bindBuffer( webGL.ARRAY_BUFFER, cbuf );
 	webGL.bufferData( webGL.ARRAY_BUFFER, new Float32Array(co), webGL.STATIC_DRAW );
 	
 	//Configure the attribute to read vertex information correctly
@@ -315,13 +324,13 @@ function render()
 	//Clear the color buffer and depth buffer
 	webGL.clear( webGL.COLOR_BUFFER_BIT | webGL.DEPTH_BUFFER_BIT);
     
-	//Load the buffers with the apple's data, and draw it
-	LoadObject(sVertex, sColor, sMatrix);
+	//Load the buffers with the sling's data, and draw it
+	LoadObject(sVertex, sColor, sMatrix, sVerticeBuff, sColorBuff);
 	webGL.drawArrays( webGL.TRIANGLES, 0, sVertex.length/3 );
 	
-	//Load the buffers with the shadow's data, and draw it
-	LoadObject(bVertex, bColor, bMatrix);
+	//Load the buffers with the base's data, and draw it
+	LoadObject(bVertex, bColor, bMatrix, bVerticeBuff, bColorBuff);
     webGL.drawArrays( webGL.TRIANGLES, 0, bVertex.length/3 );
-	
-	requestAnimationFrame(render);
 }
+
+setInterval(render, 1000/60.0);
