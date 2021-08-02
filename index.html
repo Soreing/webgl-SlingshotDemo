@@ -4,17 +4,35 @@
 		<!--Monospace Style-->
 		<style> div    {font-family: "Courier New", Times, monospace;} </style>
 		
+		<style type="text/css">
+			* {margin: 0; padding: 0;}
+			#container {height: 100%; width:512px; font-size: 0;}
+			#left, #right {display: inline-block; *display: inline; zoom: 1; vertical-align: middle; font-size: 12px;}
+			#left {width: 75%;}
+			#right {width: 25%; text-align: center;}
+			#instr {width: 512px;}
+		</style>
+
 		<!--Translation Sliders-->
-		<div> X-axis:   Left <input id="XSlider" type="range"  min="-0.75" max="0.75" step="0.01" value="0" />  Right </div>
-		<div> Y-axis:   Down <input id="YSlider" type="range"  min="0.00"  max="1" step="0.01" value="0" />  Up </div>
-		<div> Z-axis:   Back <input id="ZSlider" type="range"  min="-0.4" max="0.8" step="0.01" value="0" />  Front </div>
+		<div id = "container">
+			<div id="left">
+				<div> X-axis:   Left <input id="XSlider" type="range"  min="-0.75" max="0.75" step="0.01" value="0" />  Right </div>
+				<div> Y-axis:   Down <input id="YSlider" type="range"  min="0.00"  max="1" step="0.01" value="0.5" />  Up </div>
+				<div> Z-axis:   Back <input id="ZSlider" type="range"  min="-0.4" max="0.8" step="0.01" value="0" />  Front </div>
+			</div>
+
+			<div id="right">  
+				<button id="resetButton" type="button">Reset Ball</button> 
+			</div>
+		</div>
 		
+
+
 		<!--Instructions-->
-		<div> 
-					</br> <b>Instructions:</b> Position the slingshot on any axes with the sliders, </br>
-					then click the marble, pull it back or to the side, and release it to shoot.</br>
-					The force of the launch depends on how far you pull back the marble. </br>
-					Reload the page to shoot again... 
+		<div id="instr"> 
+					<br><b>Instructions:</b> Position the slingshot on any axes with the sliders,
+					then click the marble, pull it back or to the side, and release it to shoot.
+					The force of the launch depends on how far you pull back the marble.
 		</div>
 	
 		<!--Vertex Shader Instructions-->

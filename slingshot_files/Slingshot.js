@@ -11,7 +11,7 @@ var offset  = 0;	// Offset to the start of the first element in a set
 var fudge   = 0.80;	// Value required for the perspective view.
 
 //HTML slider states
-var input  = [0, 0, 0];		// Value of the X, Y, Z axis input sliders
+var input  = [0, 0.5, 0];		// Value of the X, Y, Z axis input sliders
 
 //Mouse co-ordinates
 var mouseInitX = 0;	// X co-ordinate of the mouse when clicked
@@ -154,6 +154,7 @@ window.onload = function setup()
 	document.getElementById("XSlider").oninput = function(evt) { input[0] = Number(evt.target.value); }
 	document.getElementById("YSlider").oninput = function(evt) { input[1] = Number(evt.target.value); }
 	document.getElementById("ZSlider").oninput = function(evt) { input[2] = Number(evt.target.value); }
+	document.getElementById("resetButton").onclick = function() { ResetStone(); }
 	
 	//Getting the Canvas and WebGL references
 	//(canvas name matches the one in Apple.html)
@@ -202,8 +203,7 @@ window.onload = function setup()
 			var sRadi = Math.pow(radius * sScale[0] / (1 + (input[2] + sTrans[2]) * fudge), 2);
 		
 			if(XDist+YDist<sRadi)
-			{	console.log("Clicked");
-				state=1;
+			{	state=1;
 			}
 		}
 	}
@@ -296,6 +296,28 @@ function ApplyForce(force, transform)
 	force[0] = Math.abs(force[0]) < horDrag ? 0 : force[0] < 0 ? force[0]+horDrag : force[0]-horDrag;
 	force[1] = force[1] - gravity;
 	force[2] = force[2] < horDrag ? 0 : force[2]-horDrag;
+}
+
+function ResetStone()
+{
+	// Mouse default values
+	mouseInitX = 0;
+	mouseInitY = 0;
+	mouseDragX = 0;
+	mouseDragY = 0;
+
+	state  = 0;
+
+	//Default transformation values
+	sTrans = [  0.00, -0.20,  0.00 ];
+	sRotat = [  0.00,  0.00,  0.00 ];
+	sScale = [  0.15,  0.15,  0.15 ];
+
+	//Physics Attributes
+	horDrag = 0.0001;
+	gravity = 0.01;
+	projOffset = [0, 0, 0];
+	projForce  = [0, 0, 0];
 }
 
 //Renders the scene
