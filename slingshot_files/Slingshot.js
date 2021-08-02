@@ -207,10 +207,44 @@ window.onload = function setup()
 			}
 		}
 	}
+
+	canvas.ontouchstart = function(e) 
+	{
+		touch = e.changedTouches[0];
+
+		if(state==0)
+		{
+			var rect = canvas.getBoundingClientRect();
+			mouseDragX=mouseInitX=((touch.clientX-rect.left) - (canvas.width/2))/(canvas.width/2);
+			mouseDragY=mouseInitY=((canvas.height-touch.clientY+rect.top) - (canvas.height/2))/(canvas.height/2);
+		
+			var XDist = Math.pow((input[0] + sTrans[0]) / (1 + (input[2] + sTrans[2]) * fudge) - mouseInitX, 2);
+			var YDist = Math.pow((input[1] + sTrans[1]) / (1 + (input[2] + sTrans[2]) * fudge) - mouseInitY, 2);
+			var sRadi = Math.pow(radius * sScale[0] / (1 + (input[2] + sTrans[2]) * fudge), 2);
+		
+			if(XDist+YDist<sRadi)
+			{	state=1;
+			}
+		}
+	}
 	
 	//Event listener for releasing the mouse click
 	//If the rock was clicked, it launches it forward
 	canvas.onmouseup= function(e) 
+	{
+		if(state==1)
+		{
+			state=2;
+			
+			var offsetY=mouseInitY-mouseDragY;
+			var offsetX=mouseInitX-mouseDragX;
+			projForce[0] = offsetX > 0.3 ? 0.3 : offsetX < -0.3 ?  -0.3 : offsetX;
+			projForce[1] = offsetY > 0.3 ? 0.3 : offsetY < 0 ?  0 : offsetY;
+			projForce[2] = offsetY > 0.3 ? 0.3 : offsetY < 0 ?  0 : offsetY;
+		}
+    }
+
+	canvas.ontouchend= function(e) 
 	{
 		if(state==1)
 		{
@@ -233,6 +267,17 @@ window.onload = function setup()
 			var rect = canvas.getBoundingClientRect();
 			mouseDragX=((e.x-rect.left) - (canvas.width/2))/(canvas.width/2);
 			mouseDragY=((canvas.height-e.y+rect.top) - (canvas.height/2))/(canvas.height/2);
+		}
+    }
+
+	canvas.ontouchmove= function(e) 
+	{
+		var touch = e.changedTouches[0];
+		if(state==1)
+		{
+			var rect = canvas.getBoundingClientRect();
+			mouseDragX=((touch.clientX-rect.left) - (canvas.width/2))/(canvas.width/2);
+			mouseDragY=((canvas.height-touch.clientY+rect.top) - (canvas.height/2))/(canvas.height/2);
 		}
     }
 	
